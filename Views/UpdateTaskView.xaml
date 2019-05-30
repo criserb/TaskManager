@@ -1,0 +1,78 @@
+﻿<Window x:Class="TaskManager.Views.UpdateTaskView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TaskManager.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        mc:Ignorable="d"
+        xmlns:vm="clr-namespace:TaskManager.ViewModel"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="UpdateTaskView" Height="450" Width="800" VerticalAlignment="Center" HorizontalAlignment="Center">
+    <Grid >
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Margin="224,86,0,0" Width="340" >
+            <!--Priorities-->
+            <ComboBox  materialDesign:HintAssist.Hint="Priorytet"
+                       Width="100" materialDesign:ComboBoxAssist.ShowSelectedItem="{Binding IsChecked, ElementName=DisplaySelectedItemCheckBox}" 
+                       Height="40" VerticalAlignment="Stretch" Style="{StaticResource MaterialDesignFloatingHintComboBox}">
+                <ComboBoxItem>
+                    Niski
+                </ComboBoxItem>
+                <ComboBoxItem IsSelected="True" >
+                    Normalny
+                </ComboBoxItem>
+                <ComboBoxItem >
+                    Wysoki
+                </ComboBoxItem>
+            </ComboBox>
+            <!--Term-->
+            <DatePicker Width="135" Text="{Binding Task.Term, Mode=TwoWay}"
+                materialDesign:HintAssist.Hint="Termin"
+                Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Height="40" />
+            <!--Status-->
+            <ComboBox  materialDesign:HintAssist.Hint="Status" 
+                       Width="100" materialDesign:ComboBoxAssist.ShowSelectedItem="{Binding IsChecked, ElementName=DisplaySelectedItemCheckBox}"
+                       Height="40" Style="{StaticResource MaterialDesignFloatingHintComboBox}">
+                <ComboBoxItem Content="Nowy" IsSelected="True"/>
+                <ComboBoxItem Content="W realizacji"  />
+                <ComboBoxItem Content="Zakończony" />
+            </ComboBox>
+        </StackPanel>
+        <!--Content-->
+        <TextBox
+    Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
+    VerticalAlignment="Top"
+    Height="130"
+    AcceptsReturn="True"
+    TextWrapping="Wrap"
+    VerticalScrollBarVisibility="Auto"
+    materialDesign:HintAssist.Hint="Treść"
+    IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextFieldTextBoxEnabledComboBox}" 
+    MaxLength="1000" materialDesign:ValidationAssist.UsePopup="True"  
+    Margin="169,131,171,0" Text="{Binding Task.Content}"/>
+
+        <!--Button panel-->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="170,285,0,0" Width="450" >
+            <!--Button confirm-->
+            <Button Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    Width="225" ToolTip="Kliknij aby dodać aby zaktualizować zadanie" 
+                     Height="30"
+                Content ="Aktualizuj" Command="{Binding UpdateCommand}" HorizontalAlignment="Center" VerticalAlignment="Center">
+            </Button>
+            <!--Button cancel-->
+            <Button Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    Width="225" ToolTip="Kliknij aby anulować i zamknąc okno" 
+                    Height="30"
+                Content ="Wróć" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Button_Click">
+            </Button>
+            <Label Content="Label"/>
+        </StackPanel>
+    </Grid>
+</Window>

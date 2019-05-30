@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TaskManager"
+        xmlns:model="clr-namespace:TaskManager.Model"
         mc:Ignorable="d"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:domain="clr-namespace:TaskManager.Domain"
@@ -16,46 +17,87 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="Task Manager Application" Height="450" Width="1000" 
         xmlns:vm="clr-namespace:TaskManager.ViewModel"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         >
 
     <Window.Resources>
-        <vm:TheTaskViewModel x:Key="TheTaskViewModel"/>
+        <vm:TaskViewModel x:Key="TheTaskViewModel"/>
+        <ObjectDataProvider x:Key="Status" MethodName="GetValues"
+                        ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="model:Status"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="Priority" MethodName="GetValues"
+                        ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="model:Priority"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
     </Window.Resources>
 
     <Grid DataContext="{Binding Source={StaticResource TheTaskViewModel}}">
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Height="90" Width="340" >
+        <!--Button panel-->
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" >
+            <!--Button add-->
             <Button Style="{StaticResource MaterialDesignRaisedDarkButton}"
-    Width="340" ToolTip="Kliknij aby dodać zadanie do bazy danych" 
-                    Margin="0,20,0,30" Height="42"
+                    Width="340" ToolTip="Kliknij aby dodać zadanie do bazy danych" 
+                     Height="30"
                 Content ="Dodaj zadanie" Command="{Binding SubmitCommand}" HorizontalAlignment="Center" VerticalAlignment="Center">
+            </Button>
+            <!--Button delete-->
+            <Button Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    Width="340" ToolTip="Kliknij aby usunąć zadanie z listy" 
+                    Height="30"
+                Content ="Usuń zadanie" Command="{Binding DeleteCommand}" HorizontalAlignment="Center" VerticalAlignment="Center">
+            </Button>
+            <!--Button update record-->
+            <Button Style="{StaticResource MaterialDesignRaisedDarkButton}"
+                    Width="340" ToolTip="Kliknij aby edytować zadanie" 
+                    Height="30"
+                Content ="Aktualizuj zadanie" Command="{Binding UpdateCommand}" HorizontalAlignment="Center" VerticalAlignment="Center">
             </Button>
         </StackPanel>
 
-
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Margin="0,90,0,0" Width="340" >
-            <ComboBox  materialDesign:HintAssist.Hint="Priorytet" Text="{Binding TheTask.Priority, Mode=TwoWay}"
+            <!--Priorities-->
+            <ComboBox  materialDesign:HintAssist.Hint="Priorytet" Text="{Binding Task.Priority, Mode=TwoWay}"
                        Width="100" materialDesign:ComboBoxAssist.ShowSelectedItem="{Binding IsChecked, ElementName=DisplaySelectedItemCheckBox}" 
                        Height="40" VerticalAlignment="Stretch" Style="{StaticResource MaterialDesignFloatingHintComboBox}">
-                <ComboBoxItem Content="Niski"/>
-                <ComboBoxItem IsSelected="True" Content="Normalny"/>
-                <ComboBoxItem Content="Wysoki"/>
+                <ComboBoxItem>
+                    Niski
+                </ComboBoxItem>
+                <ComboBoxItem IsSelected="True" >
+                    Normalny
+                </ComboBoxItem>
+                <ComboBoxItem >
+                    Wysoki
+                </ComboBoxItem>
+                <!--ItemsSource="{Binding Source={StaticResource Priority}}" SelectedItem="{Binding Task.Priority}"-->
             </ComboBox>
-
-            <DatePicker Width="135" Text="{Binding TheTask.Term, Mode=TwoWay}"
-  materialDesign:HintAssist.Hint="Termin"
-  Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Height="40" />
-
-            <ComboBox  materialDesign:HintAssist.Hint="Status" Text="{Binding TheTask.Status, Mode=TwoWay}" 
+            <!--Term-->
+            <DatePicker Width="135" Text="{Binding Task.Term, Mode=TwoWay}"
+                materialDesign:HintAssist.Hint="Termin"
+                Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Height="40" />
+            <!--Status-->
+            <ComboBox  materialDesign:HintAssist.Hint="Status" Text="{Binding Task.Status, Mode=TwoWay}" 
                        Width="100" materialDesign:ComboBoxAssist.ShowSelectedItem="{Binding IsChecked, ElementName=DisplaySelectedItemCheckBox}"
                        Height="40" Style="{StaticResource MaterialDesignFloatingHintComboBox}">
-                <ComboBoxItem IsSelected="True" Content="Nowy"/>
-                <ComboBoxItem Content="W realizacji"/>
-                <ComboBoxItem Content="Zakończony"/>
+                <!--ItemsSource="{Binding Source={StaticResource Status}}" SelectedItem="{Binding Task.Status}"-->
+                <ComboBoxItem IsSelected="True">
+                    Nowy
+                </ComboBoxItem>
+                <ComboBoxItem  >
+                    W realizacji
+                </ComboBoxItem>
+                <ComboBoxItem >
+                    Zakończony
+                </ComboBoxItem>
             </ComboBox>
         </StackPanel>
-
-        <TextBox Text="{Binding TheTask.Content, Mode=TwoWay}"
-    Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+        <!--Content-->
+        <TextBox
+    Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
     VerticalAlignment="Top"
     Height="130"
     AcceptsReturn="True"
@@ -63,20 +105,29 @@
     VerticalScrollBarVisibility="Auto"
     materialDesign:HintAssist.Hint="Treść"
     IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextFieldTextBoxEnabledComboBox}" 
-    MaxLength="1000"
-    Validation.ErrorTemplate="{StaticResource RequiredValidation}"    
-    Margin="340,0,0,0"/>
-        <ListView ItemsSource="{Binding TheTasks}" Width="Auto" Margin="0,179,0,0">
+    MaxLength="1000" materialDesign:ValidationAssist.UsePopup="True"  
+    Margin="340,0,0,0" Text="{Binding Task.Content}"/>
+        <!--Tasks-->
+
+        <DataGrid ItemsSource="{Binding Tasks}" Width="Auto" Margin="0,180,0,0"
+                  SelectedItem="{Binding SelectedTask, Mode=TwoWay}" CanUserAddRows="False"
+                  IsReadOnly="True">
+        </DataGrid>
+
+        <!--<ListView ItemsSource="{Binding Tasks}" Width="Auto" Margin="0,175,0,0" SelectedItem="{Binding SelectedTask}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="Auto"/>
-                    <GridViewColumn Header="Treść" DisplayMemberBinding="{Binding Content}" Width="Auto"/>
                     <GridViewColumn Header="Priorytet" DisplayMemberBinding="{Binding Priority}" Width="Auto"/>
-                    <GridViewColumn Header="Termin" DisplayMemberBinding="{Binding Term}" Width="100"/>
                     <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="Auto"/>
+                    <GridViewColumn Header="Termin" DisplayMemberBinding="{Binding Term}" Width="80"/>
+                    <GridViewColumn Header="Treść" DisplayMemberBinding="{Binding Content}" Width="Auto"/>
                 </GridView>
             </ListView.View>
-        </ListView>
-        <Label Content="Zapisane zadania &#8595;" HorizontalAlignment="Left" Margin="0,130,0,0" VerticalAlignment="Top" Height="44" VerticalContentAlignment="Center"/>
+        </ListView>-->
+
+
+        <Label Content="Zapisane zadania &#8595;" HorizontalAlignment="Left" 
+               Margin="0,130,0,0" VerticalAlignment="Top" Height="45" VerticalContentAlignment="Center"/>
     </Grid>
 </Window>
