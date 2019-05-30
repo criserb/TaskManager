@@ -65,11 +65,16 @@ namespace TaskManager.ViewModel
         // Edit task window 
         private UpdateTaskViewModel _updateTaskViewModel;
 
+        // Detail task window
+        private DetailsTaskViewModel _detailsTaskViewModel;
+
         // Constructor
         public TaskViewModel()
         {
             // Initial child view
             _updateTaskViewModel = new UpdateTaskViewModel();
+
+            _detailsTaskViewModel = new DetailsTaskViewModel();
 
             // Initial selected task
             SelectedTask = new Task();
@@ -83,10 +88,7 @@ namespace TaskManager.ViewModel
             // Initial task with default values
             Task = new Task
             {
-                Id = (Tasks.Count > 0) ? Tasks.Last().Id : 0,
-                Priority = "Normalny",
-                Status = "Nowy",
-                Content = ""
+                Id = (Tasks.Count > 0) ? Tasks.Last().Id : 0
             };
 
             Tasks.CollectionChanged += Tasks_CollectionChanged;
@@ -177,10 +179,10 @@ namespace TaskManager.ViewModel
 
         private void SubmitUpdate(object parameter)
         {
-            int index = Tasks.IndexOf(SelectedTask);
-
-            UpdateTaskView view = new UpdateTaskView();
-            view.DataContext = _updateTaskViewModel;
+            UpdateTaskView view = new UpdateTaskView
+            {
+                DataContext = _updateTaskViewModel
+            };
 
             _updateTaskViewModel.Task = SelectedTask;
 
@@ -191,6 +193,39 @@ namespace TaskManager.ViewModel
         }
         #endregion 
 
+        #region ShowDetails
+
+        private ICommand _detailsCommand;
+
+        public ICommand DetailsCommand
+        {
+            get
+            {
+                if (_detailsCommand == null)
+                {
+                    _detailsCommand = new RelayCommand(SubmitDetails, CanSubmitDetails, false);
+                }
+                return _detailsCommand;
+            }
+        }
+
+        private bool CanSubmitDetails(object parameter)
+        {
+            return true;
+        }
+
+        private void SubmitDetails(object parameter)
+        {
+            DetailsTaskView view = new DetailsTaskView
+            {
+                DataContext = _detailsTaskViewModel
+            };
+
+            _detailsTaskViewModel.Task = SelectedTask;
+
+            view.ShowDialog();
+        }
+        #endregion 
 
         // Observer for changes of tasks observable collection
         private void Tasks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

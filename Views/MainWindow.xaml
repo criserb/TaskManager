@@ -21,7 +21,7 @@
         >
 
     <Window.Resources>
-        <vm:TaskViewModel x:Key="TheTaskViewModel"/>
+        <vm:TaskViewModel x:Key="TaskViewModel"/>
         <ObjectDataProvider x:Key="Status" MethodName="GetValues"
                         ObjectType="{x:Type sys:Enum}">
             <ObjectDataProvider.MethodParameters>
@@ -36,7 +36,7 @@
         </ObjectDataProvider>
     </Window.Resources>
 
-    <Grid DataContext="{Binding Source={StaticResource TheTaskViewModel}}">
+    <Grid DataContext="{Binding Source={StaticResource TaskViewModel}}">
         <!--Button panel-->
         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Top" >
             <!--Button add-->
@@ -109,25 +109,15 @@
     Margin="340,0,0,0" Text="{Binding Task.Content}"/>
         <!--Tasks-->
 
-        <DataGrid ItemsSource="{Binding Tasks}" Width="Auto" Margin="0,180,0,0"
+        <DataGrid ItemsSource="{Binding Tasks}" Width="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,180,0,0"
                   SelectedItem="{Binding SelectedTask, Mode=TwoWay}" CanUserAddRows="False"
                   IsReadOnly="True">
         </DataGrid>
 
-        <!--<ListView ItemsSource="{Binding Tasks}" Width="Auto" Margin="0,175,0,0" SelectedItem="{Binding SelectedTask}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="Auto"/>
-                    <GridViewColumn Header="Priorytet" DisplayMemberBinding="{Binding Priority}" Width="Auto"/>
-                    <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="Auto"/>
-                    <GridViewColumn Header="Termin" DisplayMemberBinding="{Binding Term}" Width="80"/>
-                    <GridViewColumn Header="Treść" DisplayMemberBinding="{Binding Content}" Width="Auto"/>
-                </GridView>
-            </ListView.View>
-        </ListView>-->
-
-
         <Label Content="Zapisane zadania &#8595;" HorizontalAlignment="Left" 
                Margin="0,130,0,0" VerticalAlignment="Top" Height="45" VerticalContentAlignment="Center"/>
+        <Button Content="Szczegóły" Command="{Binding DetailsCommand}" Style="{StaticResource MaterialDesignRaisedDarkButton}"
+               ToolTip="Kliknij aby wyświetlić szczegóły zadania" HorizontalAlignment="Left" 
+                Margin="650,135,0,0" VerticalAlignment="Top" Width="340" Height="40"/>
     </Grid>
 </Window>

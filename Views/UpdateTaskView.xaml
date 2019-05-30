@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:TaskManager.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:vm="clr-namespace:TaskManager.ViewModel"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -15,8 +16,16 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="UpdateTaskView" Height="450" Width="800" VerticalAlignment="Center" HorizontalAlignment="Center">
-    <Grid >
 
+    <Window.Resources>
+        <x:Array Type="{x:Type sys:String}" x:Key="Statuses">
+            <sys:String>1</sys:String>
+            <sys:String>2</sys:String>
+            <sys:String>3</sys:String>
+        </x:Array>
+    </Window.Resources>
+
+    <Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Margin="224,86,0,0" Width="340" >
             <!--Priorities-->
             <ComboBox  materialDesign:HintAssist.Hint="Priorytet"
@@ -25,7 +34,7 @@
                 <ComboBoxItem>
                     Niski
                 </ComboBoxItem>
-                <ComboBoxItem IsSelected="True" >
+                <ComboBoxItem IsSelected="True">
                     Normalny
                 </ComboBoxItem>
                 <ComboBoxItem >
