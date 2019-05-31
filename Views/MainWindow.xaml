@@ -100,24 +100,42 @@
     Style="{StaticResource MaterialDesignFilledTextFieldTextBox}"
     VerticalAlignment="Top"
     Height="130"
-    AcceptsReturn="True"
     TextWrapping="Wrap"
     VerticalScrollBarVisibility="Auto"
     materialDesign:HintAssist.Hint="Treść"
-    IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextFieldTextBoxEnabledComboBox}" 
     MaxLength="1000" materialDesign:ValidationAssist.UsePopup="True"  
-    Margin="340,0,0,0" Text="{Binding Task.Content}"/>
+    Margin="340,0,0,0" >
+            <TextBox.Text>
+                <Binding Path="Task.Content" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" 
+                         NotifyOnValidationError="True">
+                    <!--<Binding.ValidationRules>
+                        <domain:NotEmptyValidationRule
+                         ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>-->
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
         <!--Tasks-->
 
-        <DataGrid ItemsSource="{Binding Tasks}" Width="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="0,180,0,0"
-                  SelectedItem="{Binding SelectedTask, Mode=TwoWay}" CanUserAddRows="False"
-                  IsReadOnly="True">
-        </DataGrid>
+        <ListView ItemsSource="{Binding Tasks}" Width="Auto" Margin="0,175,0,0" SelectedItem="{Binding SelectedTask}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="Auto"/>
+                    <GridViewColumn Header="Priorytet" DisplayMemberBinding="{Binding Priority}" Width="Auto"/>
+                    <GridViewColumn Header="Status" DisplayMemberBinding="{Binding Status}" Width="Auto"/>
+                    <GridViewColumn Header="Termin" DisplayMemberBinding="{Binding Term}" Width="80"/>
+                    <GridViewColumn Header="Treść" DisplayMemberBinding="{Binding Content}" Width="Auto"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
 
         <Label Content="Zapisane zadania &#8595;" HorizontalAlignment="Left" 
                Margin="0,130,0,0" VerticalAlignment="Top" Height="45" VerticalContentAlignment="Center"/>
         <Button Content="Szczegóły" Command="{Binding DetailsCommand}" Style="{StaticResource MaterialDesignRaisedDarkButton}"
                ToolTip="Kliknij aby wyświetlić szczegóły zadania" HorizontalAlignment="Left" 
-                Margin="650,135,0,0" VerticalAlignment="Top" Width="340" Height="40"/>
+                Margin="640,135,0,0" VerticalAlignment="Top" Width="340" Height="40"/>
+        <Label Visibility="{Binding TipVisibility}" Content="Pole tekstowe nie może być puste" Foreground="#0082ff" Margin="340,130,280,250"/>
+
     </Grid>
 </Window>

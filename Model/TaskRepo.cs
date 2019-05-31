@@ -18,7 +18,7 @@ namespace TaskManager.Model
             TaskRepository = GetTaskRepo();
         }
 
-        //Returning all the records in table  
+        //Returns all the records in table  
         public List<Task> GetTaskRepo()
         {
             List<Task> listOfTasks = new List<Task>();

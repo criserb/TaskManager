@@ -17,16 +17,8 @@
         FontFamily="{DynamicResource MaterialDesignFont}"
         Title="UpdateTaskView" Height="450" Width="800" VerticalAlignment="Center" HorizontalAlignment="Center">
 
-    <Window.Resources>
-        <x:Array Type="{x:Type sys:String}" x:Key="Statuses">
-            <sys:String>1</sys:String>
-            <sys:String>2</sys:String>
-            <sys:String>3</sys:String>
-        </x:Array>
-    </Window.Resources>
-
     <Grid>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Margin="224,86,0,0" Width="340" >
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40" Margin="225,85,0,0" Width="340" >
             <!--Priorities-->
             <ComboBox  materialDesign:HintAssist.Hint="Priorytet"
                        Width="100" materialDesign:ComboBoxAssist.ShowSelectedItem="{Binding IsChecked, ElementName=DisplaySelectedItemCheckBox}" 
@@ -65,23 +57,20 @@
     materialDesign:HintAssist.Hint="Treść"
     IsEnabled="{Binding Path=IsChecked, ElementName=MaterialDesignOutlinedTextFieldTextBoxEnabledComboBox}" 
     MaxLength="1000" materialDesign:ValidationAssist.UsePopup="True"  
-    Margin="169,131,171,0" Text="{Binding Task.Content}"/>
-
+    Margin="170,130,170,0" Text="{Binding Task.Content, Mode=TwoWay}"/>
+        <Label Visibility="{Binding TipVisibility}" Content="Pole tekstowe nie może być puste" Foreground="#0082ff" Margin="170,261,170,119"/>
         <!--Button panel-->
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="170,285,0,0" Width="450" >
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="170,300,0,0" Width="450" >
             <!--Button confirm-->
             <Button Style="{StaticResource MaterialDesignRaisedDarkButton}"
                     Width="225" ToolTip="Kliknij aby dodać aby zaktualizować zadanie" 
                      Height="30"
-                Content ="Aktualizuj" Command="{Binding UpdateCommand}" HorizontalAlignment="Center" VerticalAlignment="Center">
-            </Button>
+                Content ="Aktualizuj" Command="{Binding UpdateCommand}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <!--Button cancel-->
             <Button Style="{StaticResource MaterialDesignRaisedDarkButton}"
                     Width="225" ToolTip="Kliknij aby anulować i zamknąc okno" 
                     Height="30"
-                Content ="Wróć" HorizontalAlignment="Center" VerticalAlignment="Center" Click="Button_Click">
-            </Button>
-            <Label Content="Label"/>
+                Content ="Wróć" Command="{Binding CancelCommand}"  HorizontalAlignment="Center" VerticalAlignment="Center" Click="Button_Click"/>
         </StackPanel>
     </Grid>
 </Window>

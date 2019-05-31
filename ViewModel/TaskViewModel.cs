@@ -17,6 +17,14 @@ namespace TaskManager.ViewModel
     {
         #region Properties
 
+        private Visibility _tipVisibility;
+
+        public Visibility TipVisibility
+        {
+            get { return _tipVisibility; }
+            set { _tipVisibility = value; NotifyOnPropertyChanged("TipVisibility"); }
+        }
+
         private TaskRepo _taskRepo;
 
         public TaskRepo TaskRepo
@@ -31,7 +39,7 @@ namespace TaskManager.ViewModel
         public Task SelectedTask
         {
             get { return _selectedTask; }
-            set { _selectedTask = value; }
+            set { _selectedTask = value; NotifyOnPropertyChanged("SelectedTask"); }
         }
 
         private Task _task;
@@ -71,9 +79,10 @@ namespace TaskManager.ViewModel
         // Constructor
         public TaskViewModel()
         {
-            // Initial child view
+            // Initial view of updating task
             _updateTaskViewModel = new UpdateTaskViewModel();
 
+            // Initial view of task details
             _detailsTaskViewModel = new DetailsTaskViewModel();
 
             // Initial selected task
@@ -94,7 +103,7 @@ namespace TaskManager.ViewModel
             Tasks.CollectionChanged += Tasks_CollectionChanged;
         }
 
-        // Adding record
+        // Adding record Command
         #region Adding
 
         private ICommand _submitCommand;
@@ -118,12 +127,21 @@ namespace TaskManager.ViewModel
 
         private bool CanSubmitExecute(object parameter)
         {
-            return true;
+            if (string.IsNullOrEmpty(Task.Content))
+            {
+                TipVisibility = Visibility.Visible;
+                return false;
+            }
+            else
+            {
+                TipVisibility = Visibility.Hidden;
+                return true;
+            }
         }
 
         #endregion
 
-        // Deleting record
+        // Deleting record Command
         #region Deleting
 
         private ICommand _deleteCommand;
@@ -142,7 +160,14 @@ namespace TaskManager.ViewModel
 
         private bool CanSubmitDelete(object parameter)
         {
-            return true;
+            if (CheckSelectedTask())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private void SubmitDelete(object parameter)
@@ -152,10 +177,13 @@ namespace TaskManager.ViewModel
             {
                 Tasks.Remove(SelectedTask);
             }
+
+            // Initialize new SelectedTask object after delete record
+            SelectedTask = new Task();
         }
         #endregion
 
-        // Updating record
+        // Updating record Command
         #region Updating
 
         private ICommand _updateCommand;
@@ -174,7 +202,14 @@ namespace TaskManager.ViewModel
 
         private bool CanSubmitUpdate(object parameter)
         {
-            return true;
+            if (CheckSelectedTask())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private void SubmitUpdate(object parameter)
@@ -188,11 +223,11 @@ namespace TaskManager.ViewModel
 
             view.ShowDialog();
 
-            // Refresh list
-            Tasks = new ObservableCollection<Task>(TaskRepo.TaskRepository);
+            RefreshCollection();
         }
-        #endregion 
+        #endregion
 
+        // Task Details Command
         #region ShowDetails
 
         private ICommand _detailsCommand;
@@ -211,7 +246,14 @@ namespace TaskManager.ViewModel
 
         private bool CanSubmitDetails(object parameter)
         {
-            return true;
+            if (CheckSelectedTask())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private void SubmitDetails(object parameter)
@@ -225,7 +267,13 @@ namespace TaskManager.ViewModel
 
             view.ShowDialog();
         }
-        #endregion 
+        #endregion
+
+        // Refresh list of tasks
+        private void RefreshCollection()
+        {
+            Tasks = new ObservableCollection<Task>(TaskRepo.TaskRepository);
+        }
 
         // Observer for changes of tasks observable collection
         private void Tasks_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -240,6 +288,14 @@ namespace TaskManager.ViewModel
                 List<Task> tempListOfRemovedItems = e.OldItems.OfType<Task>().ToList();
                 TaskRepo.DelRecord(tempListOfRemovedItems[0].Id);
             }
+        }
+
+        private bool CheckSelectedTask()
+        {
+            if (SelectedTask.Id != 0)
+                return true;
+            else
+                return false;
         }
     }
 }

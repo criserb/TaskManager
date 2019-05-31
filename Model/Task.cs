@@ -57,6 +57,19 @@ namespace TaskManager.Model
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public Task()
+        {
+
+        }
+
+        public Task(Task t)
+        {
+            Id = t.Id;
+            Priority = t.Priority;
+            Status = t.Status;
+            Content = t.Content;
+            Term = t.Term;
+        }
         private void OnPropertyChanged(string s)
         {
             PropertyChangedEventHandler ph = PropertyChanged;

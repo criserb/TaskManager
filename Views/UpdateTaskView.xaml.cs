@@ -28,5 +28,6 @@ namespace TaskManager.Views
         {
             this.Close();
         }
+
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 using TaskManager.Command;
 using TaskManager.Model;
@@ -12,6 +13,15 @@ namespace TaskManager.ViewModel
     public class UpdateTaskViewModel : INotifyPropertyChanged
     {
         #region Properties
+
+        private Visibility _tipVisibility;
+
+        public Visibility TipVisibility
+        {
+            get { return _tipVisibility; }
+            set { _tipVisibility = value; NotifyOnPropertyChanged("TipVisibility"); }
+        }
+
         private Task task;
 
         public Task Task
@@ -27,10 +37,12 @@ namespace TaskManager.ViewModel
             get { return _taskRepo; }
             set { _taskRepo = value; }
         }
+
         #endregion
 
         public UpdateTaskViewModel()
         {
+            Task = new Task();
             TaskRepo = new TaskRepo();
         }
 
@@ -53,7 +65,16 @@ namespace TaskManager.ViewModel
 
         private bool CanSubmitUpdate(object parameter)
         {
-            return true;
+            if (string.IsNullOrEmpty(Task.Content))
+            {
+                TipVisibility = Visibility.Visible;
+                return false;
+            }
+            else
+            {
+                TipVisibility = Visibility.Hidden;
+                return true;
+            }
         }
 
         private void SubmitUpdate(object parameter)

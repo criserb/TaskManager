@@ -12,8 +12,8 @@ namespace TaskManager.Domain
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            return string.IsNullOrWhiteSpace((value ?? "").ToString())
-                ? new ValidationResult(false, "Pole jest wymagane.")
+            return string.IsNullOrEmpty(value as string)
+                ? new ValidationResult(false, "Pole jest wymagane")
                 : ValidationResult.ValidResult;
         }
     }
